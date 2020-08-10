@@ -11,6 +11,7 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
   @ObservedObject  var viewModel : EmojiMemoryGame
     var body: some View {
+        VStack{
         Grid(viewModel.cards){ card in
             Cardview(card: card).onTapGesture {
                 self.viewModel.choose(card:card)
@@ -19,6 +20,15 @@ struct EmojiMemoryGameView: View {
         }
           .padding()
           .foregroundColor(Color.orange)
+            Button(action: {
+                withAnimation(.easeInOut)
+                {
+                    self.viewModel.resetGame()
+                    
+                }
+            }, label: {Text("New Game")})
+        }
+        
     }
 }
     
@@ -36,11 +46,13 @@ struct Cardview: View{
                 .padding(5).opacity(0.4)
             Text(self.card.content)
             .font(Font.system(size: self.fontSize(for: geometry.size)))
+                .rotationEffect(Angle.degrees(self.card.isMatched ? 360 : 0))
+                .animation(self.card.isMatched ? Animation.linear(duration: 1).repeatForever(autoreverses: false): .default)
             
               
         }
         .cardify(isFaceUp: self.card.isFaceUp)
-
+        .transition(AnyTransition.scale)
     }}}
             
 }
@@ -54,30 +66,6 @@ struct Cardview: View{
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
